@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF6020"/>
+      <stop offset="100%" stop-color="#D93A00"/>
+    </linearGradient>
+    <linearGradient id="glow" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FF8040" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#FF4F00" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="soft-shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="6" stdDeviation="12" flood-color="#00000030"/>
+    </filter>
+  </defs>
+
+  <!-- App icon background -->
+  <rect width="1024" height="1024" rx="230" ry="230" fill="url(#bg)"/>
+
+  <!-- Subtle top highlight -->
+  <rect width="1024" height="500" rx="230" ry="230" fill="url(#glow)"/>
+
+  <!-- ── Running figure silhouette (white, mid-stride facing right) ── -->
+  <g filter="url(#soft-shadow)" stroke-linecap="round" stroke-linejoin="round">
+
+    <!-- Head -->
+    <circle cx="670" cy="195" r="72" fill="white"/>
+
+    <!-- Torso (forward lean ~18°) -->
+    <line x1="655" y1="262" x2="555" y2="510"
+          stroke="white" stroke-width="64"/>
+
+    <!-- Near arm — swings forward and down -->
+    <polyline points="625,335 700,455 765,415"
+              stroke="white" stroke-width="52" fill="none"/>
+
+    <!-- Far arm — swings back and up (slightly thinner, shows depth) -->
+    <polyline points="610,350 500,270 455,235"
+              stroke="white" stroke-width="44" fill="none"/>
+
+    <!-- Near leg — forward stride, knee lifted -->
+    <polyline points="565,500 645,640 705,585"
+              stroke="white" stroke-width="64" fill="none"/>
+
+    <!-- Far leg — pushing off behind -->
+    <polyline points="565,500 455,665 350,790"
+              stroke="white" stroke-width="64" fill="none"/>
+  </g>
+
+  <!-- ── Lightning bolt fuel marker (bottom-right corner accent) ── -->
+  <g opacity="0.55">
+    <polygon points="760,730 715,820 745,820 690,925 810,800 775,800"
+             fill="white"/>
+  </g>
+
+  <!-- ── "RF" wordmark below figure (subtle, gives brand anchor at large sizes) ── -->
+  <text x="512" y="940"
+        text-anchor="middle"
+        font-family="'Inter', 'Helvetica Neue', Arial, sans-serif"
+        font-weight="900"
+        font-size="88"
+        letter-spacing="18"
+        fill="rgba(255,255,255,0.35)">
+    RUNFUEL
+  </text>
+</svg>
