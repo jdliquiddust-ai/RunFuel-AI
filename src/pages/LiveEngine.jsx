@@ -7,6 +7,7 @@ import {
   getNextMilestone,
   PACE_PER_MILE,
 } from '../utils/fuelingLogic';
+import AiTip from '../components/AiTip';
 
 /* ── Streak calculation ── */
 function getStreak() {
@@ -396,12 +397,75 @@ export default function LiveEngine() {
               }
             `}</style>
 
-            {/* ── Run complete celebration ── */}
+            {/* ── Run complete celebration (full-screen overlay) ── */}
             {runComplete && (
-              <div className="mb-3 text-center fade-in">
-                <div style={{ fontSize: 48 }}>🏆</div>
-                <p className="font-black text-lg text-white">RUN COMPLETE!</p>
-                <p className="text-sm mt-0.5" style={{ color: '#FF4F00' }}>Saved to Stats · Check recovery alert</p>
+              <div
+                className="fixed inset-0 z-[100] flex flex-col fade-in"
+                style={{ background: '#0A0A0A', overflowY: 'auto' }}
+              >
+                <div className="flex flex-col items-center px-6 pt-16 pb-12" style={{ maxWidth: 480, margin: '0 auto', width: '100%' }}>
+                  {/* Trophy */}
+                  <div style={{ fontSize: 80 }}>🏆</div>
+                  <h1 className="font-black text-3xl text-white mt-4 tracking-tight">Run Complete!</h1>
+                  <p className="text-sm mt-1" style={{ color: '#FF4F00' }}>
+                    {scheduledRun?.name || `${scheduledRun?.distance} mi ${scheduledRun?.intensity} run`}
+                  </p>
+
+                  {/* Stats grid */}
+                  <div className="grid grid-cols-3 gap-3 w-full mt-8">
+                    {[
+                      { label: 'Distance', value: `${scheduledRun?.distance}mi`, icon: '📍', color: '#FF4F00' },
+                      { label: 'Time',     value: formatTime(elapsedSeconds),    icon: '⏱',  color: '#22C55E' },
+                      { label: 'Avg Pace', value: scheduledRun?.distance > 0 ? `${(elapsedSeconds / 60 / scheduledRun.distance).toFixed(1)}` : '--', icon: '⚡', color: '#3B82F6', sub: 'min/mi' },
+                    ].map(s => (
+                      <div
+                        key={s.label}
+                        className="rounded-2xl p-4 flex flex-col items-center gap-1"
+                        style={{ background: '#161616', border: '1px solid #222' }}
+                      >
+                        <span style={{ fontSize: 20 }}>{s.icon}</span>
+                        <span className="font-black text-lg leading-none" style={{ color: s.color }}>{s.value}</span>
+                        {s.sub && <span className="text-xs" style={{ color: '#4D4D4D' }}>{s.sub}</span>}
+                        <span className="text-xs font-semibold" style={{ color: '#4D4D4D' }}>{s.label}</span>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Streak */}
+                  {streak > 0 && (
+                    <div
+                      className="flex items-center gap-2 mt-5 px-5 py-3 rounded-2xl"
+                      style={{ background: 'rgba(255,79,0,0.12)', border: '1px solid rgba(255,79,0,0.25)' }}
+                    >
+                      <span style={{ fontSize: 22 }}>🔥</span>
+                      <span className="font-black text-sm" style={{ color: '#FF4F00' }}>
+                        {streak} day streak — keep it going!
+                      </span>
+                    </div>
+                  )}
+
+                  {/* AI Recovery Tip */}
+                  <div className="w-full mt-5">
+                    <AiTip
+                      distance={scheduledRun?.distance}
+                      intensity={scheduledRun?.intensity}
+                      phase="post-run recovery"
+                      userName={JSON.parse(localStorage.getItem('runfuel_user') || '{}')?.name}
+                    />
+                  </div>
+
+                  {/* Done button */}
+                  <button
+                    onClick={stopTimer}
+                    className="w-full mt-6 py-4 rounded-2xl font-black text-white text-base tracking-wide transition-all active:scale-95"
+                    style={{
+                      background: 'linear-gradient(135deg,#FF4F00,#FF7433)',
+                      boxShadow: '0 6px 24px rgba(255,79,0,0.4)',
+                    }}
+                  >
+                    Done — Back to Plan
+                  </button>
+                </div>
               </div>
             )}
 

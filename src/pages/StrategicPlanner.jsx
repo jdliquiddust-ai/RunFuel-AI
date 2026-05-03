@@ -13,6 +13,14 @@ const INTENSITY_CONFIG = {
   high:     { label: 'High',     emoji: '🔴', desc: '~8 min/mi — race effort' },
 };
 
+const TEMPLATES = [
+  { name: 'Easy Recovery',    distance: 3,    intensity: 'easy',     emoji: '🟢', color: '#22C55E', desc: '3 mi · ~36 min' },
+  { name: 'Tempo Run',        distance: 6,    intensity: 'moderate', emoji: '🟡', color: '#FF4F00', desc: '6 mi · ~60 min' },
+  { name: 'Long Run',         distance: 13,   intensity: 'easy',     emoji: '🏃', color: '#3B82F6', desc: '13 mi · ~2h 36m' },
+  { name: 'Race Simulation',  distance: 10,   intensity: 'high',     emoji: '🔴', color: '#EF4444', desc: '10 mi · ~1h 20m' },
+  { name: '5K Shakeout',      distance: 3.1,  intensity: 'moderate', emoji: '⚡', color: '#F59E0B', desc: '3.1 mi · ~31 min' },
+];
+
 function todayStr() {
   const d = new Date();
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
@@ -215,6 +223,43 @@ export default function StrategicPlanner({ onSave, onSwitchToLive, user }) {
                 userName={user?.name}
               />
             )}
+
+            {/* ── Run Templates ── */}
+            <div>
+              <p className="text-xs font-black uppercase tracking-widest mb-3" style={{ color: '#9CA3AF' }}>
+                Quick Start
+              </p>
+              <div className="grid grid-cols-1 gap-2">
+                {TEMPLATES.map(t => (
+                  <button
+                    key={t.name}
+                    onClick={() => setForm(f => ({ ...f, name: t.name, distance: t.distance, intensity: t.intensity }))}
+                    className="flex items-center gap-4 px-4 py-3.5 rounded-2xl text-left transition-all duration-150 active:scale-95"
+                    style={{
+                      background: form.name === t.name ? t.color + '14' : 'white',
+                      border: `1.5px solid ${form.name === t.name ? t.color : '#F3F4F6'}`,
+                      boxShadow: form.name === t.name ? `0 4px 14px ${t.color}20` : '0 1px 4px rgba(0,0,0,0.04)',
+                    }}
+                  >
+                    <div
+                      className="w-10 h-10 rounded-xl flex items-center justify-center text-xl flex-shrink-0"
+                      style={{ background: t.color + '18' }}
+                    >
+                      {t.emoji}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-black text-sm" style={{ color: '#1A1A1A' }}>{t.name}</p>
+                      <p className="text-xs font-medium" style={{ color: '#9CA3AF' }}>{t.desc}</p>
+                    </div>
+                    {form.name === t.name && (
+                      <span className="text-xs font-black px-2 py-1 rounded-lg flex-shrink-0" style={{ background: t.color, color: 'white' }}>
+                        Selected
+                      </span>
+                    )}
+                  </button>
+                ))}
+              </div>
+            </div>
 
             {/* Form card */}
             <div className="glass-card rounded-2xl p-5 space-y-5">
