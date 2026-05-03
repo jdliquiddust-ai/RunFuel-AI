@@ -4,7 +4,7 @@ import cors from 'cors';
 import Anthropic from '@anthropic-ai/sdk';
 
 const app  = express();
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 
 app.use(cors({ origin: ['http://localhost:5177', 'http://localhost:5173'] }));
 app.use(express.json());
