@@ -1,15 +1,31 @@
 import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
-import Anthropic from '@anthropic-ai/sdk';
 
 const app  = express();
 const PORT = process.env.PORT || 3001;
+const API_KEY = process.env.ANTHROPIC_API_KEY;
 
 app.use(cors());
 app.use(express.json());
 
-const client = new Anthropic(); // reads ANTHROPIC_API_KEY from env
+async function claudeTip(prompt, maxTokens = 120) {
+  const res = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'x-api-key': API_KEY,
+      'anthropic-version': '2023-06-01',
+      'content-type': 'application/json',
+    },
+    body: JSON.stringify({
+      model: 'claude-haiku-4-5-20251001',
+      max_tokens: maxTokens,
+      messages: [{ role: 'user', content: prompt }],
+    }),
+  });
+  const data = await res.json();
+  return data.content[0].text.trim();
+}
 
 /* ── POST /api/tip ───────────────────────────────────────────────────────── */
 app.post('/api/tip', async (req, res) => {
@@ -19,7 +35,11 @@ app.post('/api/tip', async (req, res) => {
     return res.status(400).json({ error: 'distance and intensity required' });
   }
 
-  const paceLabel = { easy: '12 min/mi easy pace', moderate: '10 min/mi moderate pace', high: '8 min/mi race effort' }[intensity] || intensity;
+  const paceLabel = {
+    easy: '12 min/mi easy pace',
+    moderate: '10 min/mi moderate pace',
+    high: '8 min/mi race effort',
+  }[intensity] || intensity;
 
   const prompt = `You are an elite running coach and sports nutritionist. Give ONE sharp, specific, personalized tip for ${userName || 'this runner'} who is planning a ${distance}-mile run at ${paceLabel}.
 
@@ -33,12 +53,7 @@ Rules:
 - Do NOT start with "Great!" or similar filler.`;
 
   try {
-    const message = await client.messages.create({
-      model:      'claude-haiku-4-5-20251001',
-      max_tokens: 120,
-      messages:   [{ role: 'user', content: prompt }],
-    });
-    res.json({ tip: message.content[0].text.trim() });
+    res.json({ tip: await claudeTip(prompt, 120) });
   } catch (err) {
     console.error('Claude error:', err.message);
     res.status(500).json({ error: 'AI tip unavailable' });
@@ -54,12 +69,7 @@ They have logged ${totalRuns || 0} runs and ${totalMiles || 0} total miles.
 1 sentence only. Be specific and punchy. No filler.`;
 
   try {
-    const message = await client.messages.create({
-      model:      'claude-haiku-4-5-20251001',
-      max_tokens: 80,
-      messages:   [{ role: 'user', content: prompt }],
-    });
-    res.json({ tip: message.content[0].text.trim() });
+    res.json({ tip: await claudeTip(prompt, 80) });
   } catch (err) {
     res.status(500).json({ error: 'AI tip unavailable' });
   }
@@ -67,5 +77,4 @@ They have logged ${totalRuns || 0} runs and ${totalMiles || 0} total miles.
 
 app.listen(PORT, () => {
   console.log(`\n🔥 RunFuel AI server → http://localhost:${PORT}`);
-  console.log('   Claude Haiku wired for AI tips\n');
 });
