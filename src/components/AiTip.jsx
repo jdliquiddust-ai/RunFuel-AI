@@ -10,7 +10,7 @@ export default function AiTip({ distance, intensity, phase, userName, endpoint =
     if (fetchedRef.current) return;
     fetchedRef.current = true;
 
-    fetch('http://localhost:3001' + endpoint, {
+    fetch((import.meta.env.VITE_API_URL || 'http://localhost:3001') + endpoint, {
       method:  'POST',
       headers: { 'Content-Type': 'application/json' },
       body:    JSON.stringify({ distance, intensity, phase, userName, ...extraBody }),
