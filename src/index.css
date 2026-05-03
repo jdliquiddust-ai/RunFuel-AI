@@ -1,0 +1,265 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: 'Inter', system-ui, sans-serif;
+  background: #ffffff;
+}
+
+/* ══════════════════════════════════════════
+   LIGHT MODE — Glass cards (Plan / Stats)
+══════════════════════════════════════════ */
+.glass-card {
+  background: rgba(255, 255, 255, 0.90);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.40);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0,0,0,0.04);
+}
+
+/* ══════════════════════════════════════════
+   DARK MODE — Premium near-black canvas
+   (Live Engine — mirrors Spotify / Apple dark)
+══════════════════════════════════════════ */
+
+/* True-black background layer */
+.live-bg {
+  background: #0A0A0A;
+  transition: background 0.6s ease;
+}
+
+/* Milestone: entire screen blasts orange then returns */
+.live-bg.flash-orange {
+  animation: cinematic-flash 3.2s ease-in-out forwards;
+}
+
+@keyframes cinematic-flash {
+  0%   { background: #0A0A0A; }
+  8%   { background: #FF4F00; }
+  30%  { background: #FF6020; }
+  55%  { background: #2A1000; }
+  100% { background: #0A0A0A; }
+}
+
+/* Dark surface cards */
+.dark-card {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/* Glass control button (pause/stop) */
+.glass-btn {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition: all 0.18s ease;
+  cursor: pointer;
+}
+
+.glass-btn:hover {
+  background: rgba(255, 255, 255, 0.13);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.glass-btn:active {
+  transform: scale(0.93);
+}
+
+/* ── Stopwatch digit display ── */
+.stopwatch-digits {
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  font-weight: 700;
+  color: #ffffff;
+  text-shadow:
+    0 0 60px rgba(255, 79, 0, 0.75),
+    0 0 20px rgba(255, 79, 0, 0.45),
+    0 2px 6px rgba(0, 0, 0, 0.8);
+  letter-spacing: 0.06em;
+}
+
+/* Stopwatch ring glow when running */
+.ring-active {
+  filter: drop-shadow(0 0 14px rgba(255, 79, 0, 0.7));
+}
+
+/* ── Pulse ring for active stopwatch ── */
+.pulse-ring {
+  animation: pulse-ring 2s cubic-bezier(0.455, 0.03, 0.515, 0.955) infinite;
+}
+
+@keyframes pulse-ring {
+  0%   { box-shadow: 0 0 0 0   rgba(255, 79, 0, 0.55), 0 0 40px rgba(255,79,0,0.15); }
+  70%  { box-shadow: 0 0 0 28px rgba(255, 79, 0, 0),   0 0 40px rgba(255,79,0,0.1);  }
+  100% { box-shadow: 0 0 0 0   rgba(255, 79, 0, 0),    0 0 40px rgba(255,79,0,0.15); }
+}
+
+/* ── Milestone flash banner slide-in ── */
+.alert-banner {
+  animation: slide-down 0.38s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes slide-down {
+  from { transform: translateY(-110%); opacity: 0; }
+  to   { transform: translateY(0);     opacity: 1; }
+}
+
+/* ── Next fuel progress bar ── */
+.fuel-bar-fill {
+  transition: width 1s linear;
+  background: linear-gradient(90deg, #FF4F00, #FF7A33);
+  box-shadow: 0 0 8px rgba(255, 79, 0, 0.5);
+}
+
+/* ── START RUN button — cinematic orange ── */
+.start-btn {
+  background: linear-gradient(145deg, #FF5500, #FF4F00, #E64000);
+  box-shadow:
+    0 0 0 1px rgba(255, 79, 0, 0.3),
+    0 8px 32px rgba(255, 79, 0, 0.5),
+    0 2px 8px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.start-btn:hover {
+  box-shadow:
+    0 0 0 1px rgba(255, 79, 0, 0.5),
+    0 12px 40px rgba(255, 79, 0, 0.65),
+    0 2px 8px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  transform: translateY(-1px);
+}
+
+.start-btn:active {
+  transform: scale(0.95) translateY(0);
+  box-shadow:
+    0 0 0 1px rgba(255, 79, 0, 0.3),
+    0 4px 16px rgba(255, 79, 0, 0.4),
+    0 1px 4px rgba(0, 0, 0, 0.5);
+}
+
+/* ── Streak badge ── */
+.streak-badge {
+  background: linear-gradient(135deg, rgba(255,79,0,0.2), rgba(255,100,0,0.1));
+  border: 1px solid rgba(255, 79, 0, 0.35);
+  backdrop-filter: blur(8px);
+}
+
+/* ── Range slider ── */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
+  width: 100%;
+}
+
+input[type="range"]::-webkit-slider-runnable-track {
+  height: 6px;
+  border-radius: 3px;
+  background: linear-gradient(
+    to right,
+    #FF4F00 0%,
+    #FF4F00 var(--fill, 20%),
+    #E5E7EB var(--fill, 20%),
+    #E5E7EB 100%
+  );
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 22px;
+  width: 22px;
+  border-radius: 50%;
+  background: #FF4F00;
+  margin-top: -8px;
+  box-shadow: 0 2px 10px rgba(255, 79, 0, 0.5);
+  transition: box-shadow 0.15s;
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+  box-shadow: 0 2px 18px rgba(255, 79, 0, 0.7);
+}
+
+input[type="range"]::-moz-range-track {
+  height: 6px;
+  border-radius: 3px;
+  background: #E5E7EB;
+}
+
+input[type="range"]::-moz-range-progress {
+  height: 6px;
+  border-radius: 3px;
+  background: #FF4F00;
+}
+
+input[type="range"]::-moz-range-thumb {
+  height: 22px;
+  width: 22px;
+  border-radius: 50%;
+  background: #FF4F00;
+  border: none;
+  box-shadow: 0 2px 10px rgba(255, 79, 0, 0.5);
+}
+
+/* ── Fade in ── */
+.fade-in {
+  animation: fade-in 0.4s ease;
+}
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Intensity pill ── */
+.intensity-pill {
+  transition: all 0.2s ease;
+  cursor: pointer;
+  border-radius: 9999px;
+  padding: 0.5rem 1.25rem;
+  font-weight: 600;
+  font-size: 0.875rem;
+  border: 2px solid transparent;
+}
+
+.intensity-pill.active {
+  background: #FF4F00;
+  color: white;
+  border-color: #FF4F00;
+  box-shadow: 0 4px 16px rgba(255, 79, 0, 0.4);
+}
+
+.intensity-pill.inactive {
+  background: white;
+  color: #2D2D2D;
+  border-color: #E5E7EB;
+}
+
+.intensity-pill.inactive:hover {
+  border-color: #FF4F00;
+  color: #FF4F00;
+}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #E5E7EB; border-radius: 2px; }
+
+/* dark scrollbar inside live engine */
+.live-bg ::-webkit-scrollbar-thumb { background: #2D2D2D; }
