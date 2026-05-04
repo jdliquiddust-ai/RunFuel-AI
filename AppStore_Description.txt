@@ -1,0 +1,193 @@
+================================================================================
+  RUNFUEL AI — APP STORE METADATA PACKAGE
+  Target: Apple App Store · Category: Health & Fitness
+  Bundle ID: com.jd.runfuel
+================================================================================
+
+── APP NAME ──────────────────────────────────────────────────────────────────
+
+RunFuel AI — Race Nutrition
+
+── SUBTITLE (30 chars max) ───────────────────────────────────────────────────
+
+Your Personal Race Day Fuel Coach
+
+── PROMOTIONAL TEXT (170 chars max) ─────────────────────────────────────────
+
+Stop guessing your grams. RunFuel AI computes your exact carbs, sodium, and
+hydration from your weight and pace — then guides you to every fuel stop, live.
+
+── DESCRIPTION ───────────────────────────────────────────────────────────────
+
+STRAVA TRACKS. RUNFUEL ARCHITECTS.
+
+Strava tells you how far you ran. RunFuel tells you how to fuel it.
+
+Most runners hit the wall not because they're unfit — but because they
+guessed their nutrition. RunFuel AI ends that. It computes your complete
+fueling plan from your actual body weight, distance, and race pace, then
+guides you through every fuel stop with real-time countdowns.
+
+─ THE CALCULATOR ─
+
+Enter your weight, distance, and pace. RunFuel instantly computes:
+
+  • Carbohydrates needed (grams)
+  • Sodium target (milligrams)
+  • Hydration requirement (fluid ounces)
+  • Number of fuel stops and exact timing
+  • Per-stop breakdown so you know exactly what to carry
+
+Formulas are grounded in ACSM (American College of Sports Medicine)
+endurance nutrition guidelines — the same standards used by elite coaches.
+
+─ TRAINING MODE vs. RACE DAY MODE ─
+
+TRAINING MODE  →  Standard fueling. ~45g carbs/hr. Build the habit.
+
+RACE DAY MODE  →  Aggressive protocol. ~60g carbs/hr. Peak sodium.
+                   Because Sunday is not a practice run.
+
+Switch modes and watch the numbers recalculate instantly from your inputs —
+no presets, no guesswork.
+
+─ RACE INTELLIGENCE ─
+
+Type your race name — "Boston Marathon," "Chicago Half," "local 10K" — and
+RunFuel detects the distance automatically. Your fueling plan is then
+computed specifically for that race distance, your pace, and your body.
+
+Supports: 5K · 10K · 15K · Half Marathon · Marathon · 50K · 100K · Ultra
+
+─ LIVE RUN ENGINE ─
+
+When you're ready, tap Start Race. RunFuel switches to a live timer with:
+
+  • A countdown ring to your next fuel stop
+  • Fuel banners that fire exactly when you need to eat
+  • Haptic alerts at every stop (Android)
+  • A scrubable timeline so you can simulate or review your race
+  • Elapsed time tracking
+
+The screen stays on. The ring counts down. You run.
+
+─ COACH'S INSIGHT ─
+
+Below every fuel plan, a Coach's Insight card delivers a context-aware tip:
+
+  "Half marathon distance. Your first window opens at 28 min — don't wait
+   for hunger signals. Absorption takes 15–20 minutes."
+
+  "20+ miles: glycogen hits critical at mile 16–18. Every scheduled hit
+   is your wall insurance. Miss one and you pay for it later."
+
+Tips adapt to your distance, pace, mode, and hydration demand.
+
+─ FUEL BRAND PAIRING ─
+
+Select your go-to brand and RunFuel tells you exactly how many to carry
+per stop. Supports 14 brands including:
+
+GU Energy · Maurten · Huma · Clif Shot · Honey Stinger · Spring Energy
+SiS · Skratch Labs · Precision Fuel · Tailwind · Nuun · SaltStick
+VESPA · SWORD Performance
+
+─ RUN HISTORY & ACHIEVEMENTS ─
+
+Every completed run is logged. Track your total miles, average pace, and
+unlock achievement badges as you hit milestones: First Run, Habit (5 runs),
+Half Century (50 miles), Marathon Month, Speed Demon, Long Hauler.
+
+─ PRIVACY FIRST ─
+
+Zero data collection. Everything lives on your device. No account required
+to use the calculator. No ads. No tracking. No subscriptions forced on you.
+
+─ BUILT FOR ATHLETES ─
+
+  • Executive Noir dark interface — readable in bright sunlight
+  • Designed for one-handed use mid-race
+  • Works offline — no internet needed for fuel calculations
+  • Instant calculations — no "calculate" button, results update live
+
+WHETHER YOU'RE CHASING A PR OR FINISHING YOUR FIRST MARATHON —
+you deserve to know your numbers before the gun goes off.
+
+RunFuel AI. Architect your race.
+
+── KEYWORDS (100 chars max) ──────────────────────────────────────────────────
+
+marathon,running,fuel,nutrition,endurance,race,GU,gel,SaltStick,hydration,pacer,triathlon,coach
+
+── SUPPORT URL ───────────────────────────────────────────────────────────────
+
+https://runfuelai.com/support
+
+── PRIVACY POLICY URL ────────────────────────────────────────────────────────
+
+https://runfuelai.com/privacy
+
+── MARKETING URL (optional) ──────────────────────────────────────────────────
+
+https://runfuelai.com
+
+── VERSION ───────────────────────────────────────────────────────────────────
+
+1.0.0
+
+── WHAT'S NEW (Version Notes) ────────────────────────────────────────────────
+
+Initial release.
+
+• Training Mode & Race Day Mode with dynamically computed fueling protocols
+• Live Run Engine with real-time countdown ring and haptic fuel alerts
+• Race Intelligence — type your race name, get the right distance instantly
+• Coach's Insight — context-aware tips based on your distance, pace & mode
+• 14 fuel brand recommendations with per-stop carry counts
+• Run History, Achievements, and complete fuel plan archiving
+• Executive Noir dark interface — built for race day conditions
+
+── CATEGORIES ────────────────────────────────────────────────────────────────
+
+Primary:   Health & Fitness
+Secondary: Sports
+
+── AGE RATING ────────────────────────────────────────────────────────────────
+
+4+ (no objectionable content)
+
+── PRICING ───────────────────────────────────────────────────────────────────
+
+Free (freemium-ready — subscription infrastructure in place for v1.1)
+
+── IN-APP PURCHASES ──────────────────────────────────────────────────────────
+
+None at launch. Architecture supports future premium tier (cloud sync,
+Apple Watch companion, AI coaching subscription).
+
+── SCREENSHOT NOTES (for designer) ──────────────────────────────────────────
+
+Shot 1 — HERO: Dashboard with Boston Marathon entered, Race Day mode active,
+         full fuel plan visible (carbs/water/sodium/stops).
+         Caption: "Your exact fuel plan. Computed from your body."
+
+Shot 2 — LIVE RUN: Active run screen with countdown ring at ~50% progress,
+         orange glow, FUEL NOW banner fired.
+         Caption: "Never guess a gel stop again."
+
+Shot 3 — RACE INTELLIGENCE: Race name field with "Boston Marathon" typed,
+         detection chip showing "Marathon · 26.2 miles" and USE button.
+         Caption: "Type your race. Get your plan."
+
+Shot 4 — TRAINING vs RACE DAY: Side-by-side of same inputs in both modes
+         showing the carb/sodium delta.
+         Caption: "Train smart. Race harder."
+
+Shot 5 — COACH'S INSIGHT + HISTORY: Insight card with marathon tip,
+         below it history with race badges.
+         Caption: "A coach in your pocket. Every run archived."
+
+================================================================================
+  END OF METADATA PACKAGE
+  Next: Xcode → Signing → TestFlight → App Store Connect submission
+================================================================================

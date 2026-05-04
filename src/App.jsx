@@ -1,59 +1,115 @@
 import { useState } from 'react';
-import Navigation from './components/Navigation';
-import StrategicPlanner from './pages/StrategicPlanner';
-import LiveEngine from './pages/LiveEngine';
-import Stats from './pages/Stats';
-import Auth from './pages/Auth';
+import Auth         from './pages/Auth';
+import Dashboard    from './pages/Dashboard';
+import LiveTracking from './pages/LiveTracking';
+import Achievements from './pages/Achievements';
+import History      from './pages/History';
+import Profile      from './pages/Profile';
+import BottomNav    from './components/BottomNav';
+
+const DEFAULT_SETTINGS = { haptics: true, strobe: true, fuelBanner: true };
+
+function load(key, fallback) {
+  try { return JSON.parse(localStorage.getItem(key)) ?? fallback; }
+  catch { return fallback; }
+}
 
 export default function App() {
-  const [tab, setTab] = useState('plan');
-  const [user, setUser] = useState(() => {
-    const stored = localStorage.getItem('runfuel_user');
-    return stored ? JSON.parse(stored) : null;
-  });
+  const [user,     setUser]     = useState(() => load('runfuel_user',     null));
+  const [history,  setHistory]  = useState(() => load('runfuel_history',  []));
+  const [settings, setSettings] = useState(() => load('runfuel_settings', DEFAULT_SETTINGS));
+  const [screen,   setScreen]   = useState('dashboard');
+  const [runData,  setRunData]  = useState(null);
+  const [inRun,    setInRun]    = useState(false);
 
+  /* ── Auth ─────────────────────────────────── */
+  function handleAuth(u)  { setUser(u); }
   function handleLogout() {
     localStorage.removeItem('runfuel_user');
     setUser(null);
+    setScreen('dashboard');
   }
 
-  if (!user) return <Auth onAuth={setUser} />;
+  function handleDeleteAll() {
+    ['runfuel_user', 'runfuel_history', 'runfuel_settings', 'runfuel_paused', 'runfuel_scheduled_run'].forEach(k =>
+      localStorage.removeItem(k)
+    );
+    setUser(null);
+    setHistory([]);
+    setSettings(DEFAULT_SETTINGS);
+    setScreen('dashboard');
+  }
 
+  function handleUpdateSettings(next) {
+    setSettings(next);
+    localStorage.setItem('runfuel_settings', JSON.stringify(next));
+  }
+
+  /* ── History helpers ──────────────────────── */
+  function saveEntry(entry) {
+    const next = [entry, ...history];
+    setHistory(next);
+    localStorage.setItem('runfuel_history', JSON.stringify(next));
+  }
+  function deleteOne(idx) {
+    const next = history.filter((_, i) => i !== idx);
+    setHistory(next);
+    localStorage.setItem('runfuel_history', JSON.stringify(next));
+  }
+  function clearAll() {
+    setHistory([]);
+    localStorage.removeItem('runfuel_history');
+  }
+
+  /* ── Run flow ─────────────────────────────── */
+  function startRun(data)    { setRunData(data); setInRun(true); }
+  function savePlan(entry)   { saveEntry({ ...entry, planned: true }); }
+  function finishRun(entry)  { saveEntry(entry); setInRun(false); setRunData(null); setScreen('dashboard'); }
+  function cancelRun()       { setInRun(false); setRunData(null); }
+
+  /* ── Not logged in ────────────────────────── */
+  if (!user) return <Auth onAuth={handleAuth} />;
+
+  /* ── Live tracking (full screen, no nav) ──── */
+  if (inRun) {
+    return <LiveTracking data={runData} settings={settings} onFinish={finishRun} onCancel={cancelRun} />;
+  }
+
+  /* ── Main app ─────────────────────────────── */
   return (
-    <div className="relative" style={{ minHeight: '100vh', background: '#ffffff' }}>
-      {/* App header wordmark — only on non-live tabs */}
-      {tab !== 'live' && (
-        <div
-          className="fixed top-0 left-0 right-0 z-30 flex items-center justify-center"
-          style={{
-            height: 44,
-            background: 'rgba(255,255,255,0.92)',
-            backdropFilter: 'blur(8px)',
-            borderBottom: '1px solid #F3F4F6',
-          }}
-        >
-          <span className="font-black text-sm tracking-widest uppercase" style={{ color: '#2D2D2D' }}>
-            RUN<span style={{ color: '#FF4F00' }}>FUEL</span>{' '}
-            <span style={{ color: '#9CA3AF', fontWeight: 400 }}>AI</span>
-          </span>
-        </div>
+    <div style={{ background: '#0D0D0D', minHeight: '100dvh' }}>
+      {screen === 'dashboard' && (
+        <Dashboard
+          user={user}
+          history={history}
+          onStart={startRun}
+          onSavePlan={savePlan}
+          onLogout={handleLogout}
+        />
       )}
-
-      {/* Page content */}
-      <div style={{ paddingTop: tab !== 'live' ? 44 : 0 }}>
-        {tab === 'plan' && (
-          <StrategicPlanner
-            onSave={() => {}}
-            onSwitchToLive={() => setTab('live')}
-            user={user}
-          />
-        )}
-        {tab === 'live' && <LiveEngine />}
-        {tab === 'stats' && <Stats user={user} onLogout={handleLogout} />}
-      </div>
-
-      {/* Bottom navigation */}
-      <Navigation tab={tab} setTab={setTab} />
+      {screen === 'history' && (
+        <History
+          history={history}
+          user={user}
+          onDeleteOne={deleteOne}
+          onClear={clearAll}
+          onLogout={handleLogout}
+          onDeleteAll={handleDeleteAll}
+        />
+      )}
+      {screen === 'achievements' && (
+        <Achievements history={history} />
+      )}
+      {screen === 'profile' && (
+        <Profile
+          user={user}
+          settings={settings}
+          onUpdateSettings={handleUpdateSettings}
+          onLogout={handleLogout}
+          onDeleteAll={handleDeleteAll}
+        />
+      )}
+      <BottomNav screen={screen} onNav={setScreen} />
     </div>
   );
 }

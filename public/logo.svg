@@ -1,65 +1,121 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
   <defs>
+    <!-- Dark premium background -->
     <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#FF6020"/>
-      <stop offset="100%" stop-color="#D93A00"/>
+      <stop offset="0%"   stop-color="#181008"/>
+      <stop offset="100%" stop-color="#080402"/>
     </linearGradient>
-    <linearGradient id="glow" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stop-color="#FF8040" stop-opacity="0.25"/>
-      <stop offset="100%" stop-color="#FF4F00" stop-opacity="0"/>
+
+    <!-- Orange ambient glow in center -->
+    <radialGradient id="ambient" cx="50%" cy="50%" r="45%">
+      <stop offset="0%"   stop-color="#FF5500" stop-opacity="0.20"/>
+      <stop offset="100%" stop-color="#FF2200" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Arc gradient -->
+    <linearGradient id="arc-grad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%"   stop-color="#FF7A00"/>
+      <stop offset="100%" stop-color="#FF3D00"/>
     </linearGradient>
-    <filter id="soft-shadow" x="-20%" y="-20%" width="140%" height="140%">
-      <feDropShadow dx="0" dy="6" stdDeviation="12" flood-color="#00000030"/>
+
+    <!-- Fuel drop gradient -->
+    <linearGradient id="drop-grad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%"   stop-color="#FFFFFF"/>
+      <stop offset="100%" stop-color="#FFD4B8"/>
+    </linearGradient>
+
+    <!-- Bottom vignette -->
+    <linearGradient id="vig" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%"   stop-color="#000" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#000" stop-opacity="0.45"/>
+    </linearGradient>
+
+    <!-- Glow for the arc -->
+    <filter id="arc-glow" x="-15%" y="-15%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="0" stdDeviation="18"
+                    flood-color="#FF5500" flood-opacity="0.70"/>
     </filter>
+
+    <!-- Glow for dot milestone -->
+    <filter id="dot-glow" x="-100%" y="-100%" width="300%" height="300%">
+      <feDropShadow dx="0" dy="0" stdDeviation="14"
+                    flood-color="#FF7700" flood-opacity="1"/>
+    </filter>
+
+    <!-- Glow for fuel drop -->
+    <filter id="drop-glow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="0" stdDeviation="12"
+                    flood-color="#FFFFFF" flood-opacity="0.30"/>
+    </filter>
+
+    <clipPath id="clip">
+      <rect width="1024" height="1024" rx="224" ry="224"/>
+    </clipPath>
   </defs>
 
-  <!-- App icon background -->
-  <rect width="1024" height="1024" rx="230" ry="230" fill="url(#bg)"/>
+  <g clip-path="url(#clip)">
+    <!-- Background -->
+    <rect width="1024" height="1024" fill="url(#bg)"/>
+    <rect width="1024" height="1024" fill="url(#ambient)"/>
 
-  <!-- Subtle top highlight -->
-  <rect width="1024" height="500" rx="230" ry="230" fill="url(#glow)"/>
+    <!--
+      ARC — represents the run progress / stopwatch ring
+      Center: 512,512  Radius: 330  Stroke: 52
+      Circumference: 2π×330 ≈ 2073
+      270° arc = 75% = 1555px  Gap = 518px
+      Rotated -90° so arc starts at 12 o'clock
+      Arc ends at 9 o'clock position (left): (182, 512)
+    -->
 
-  <!-- ── Running figure silhouette (white, mid-stride facing right) ── -->
-  <g filter="url(#soft-shadow)" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Faint track (full circle) -->
+    <circle cx="512" cy="512" r="330"
+            fill="none"
+            stroke="#FF4F00"
+            stroke-width="52"
+            stroke-linecap="round"
+            opacity="0.10"/>
 
-    <!-- Head -->
-    <circle cx="670" cy="195" r="72" fill="white"/>
+    <!-- Active arc — 270° (the run in progress) -->
+    <circle cx="512" cy="512" r="330"
+            fill="none"
+            stroke="url(#arc-grad)"
+            stroke-width="52"
+            stroke-linecap="round"
+            stroke-dasharray="1555 518"
+            transform="rotate(-90 512 512)"
+            filter="url(#arc-glow)"/>
 
-    <!-- Torso (forward lean ~18°) -->
-    <line x1="655" y1="262" x2="555" y2="510"
-          stroke="white" stroke-width="64"/>
+    <!-- Milestone dot at arc endpoint (9 o'clock = left side = 182,512) -->
+    <circle cx="182" cy="512" r="32"
+            fill="#FF6600"
+            filter="url(#dot-glow)"/>
+    <circle cx="182" cy="512" r="16"
+            fill="white"/>
 
-    <!-- Near arm — swings forward and down -->
-    <polyline points="625,335 700,455 765,415"
-              stroke="white" stroke-width="52" fill="none"/>
+    <!--
+      FUEL DROP — centered inside the ring
+      Clean teardrop: tip at top, round at bottom
+      Bottom: (512, 660)  Tip: (512, 318)
+      Widest: ±108px at y≈580
+    -->
+    <g filter="url(#drop-glow)">
+      <path d="M 512 660
+               C 400 636 362 554 394 474
+               C 416 420 462 376 512 318
+               C 562 376 608 422 630 476
+               C 662 556 624 638 512 660 Z"
+            fill="url(#drop-grad)"/>
 
-    <!-- Far arm — swings back and up (slightly thinner, shows depth) -->
-    <polyline points="610,350 500,270 455,235"
-              stroke="white" stroke-width="44" fill="none"/>
+      <!-- Inner highlight on drop -->
+      <path d="M 512 598
+               C 470 584 452 546 464 506
+               C 472 480 490 460 512 430
+               C 534 460 550 482 558 508
+               C 570 548 554 586 512 598 Z"
+            fill="white" opacity="0.45"/>
+    </g>
 
-    <!-- Near leg — forward stride, knee lifted -->
-    <polyline points="565,500 645,640 705,585"
-              stroke="white" stroke-width="64" fill="none"/>
-
-    <!-- Far leg — pushing off behind -->
-    <polyline points="565,500 455,665 350,790"
-              stroke="white" stroke-width="64" fill="none"/>
+    <!-- Bottom vignette -->
+    <rect width="1024" height="1024" fill="url(#vig)"/>
   </g>
-
-  <!-- ── Lightning bolt fuel marker (bottom-right corner accent) ── -->
-  <g opacity="0.55">
-    <polygon points="760,730 715,820 745,820 690,925 810,800 775,800"
-             fill="white"/>
-  </g>
-
-  <!-- ── "RF" wordmark below figure (subtle, gives brand anchor at large sizes) ── -->
-  <text x="512" y="940"
-        text-anchor="middle"
-        font-family="'Inter', 'Helvetica Neue', Arial, sans-serif"
-        font-weight="900"
-        font-size="88"
-        letter-spacing="18"
-        fill="rgba(255,255,255,0.35)">
-    RUNFUEL
-  </text>
 </svg>

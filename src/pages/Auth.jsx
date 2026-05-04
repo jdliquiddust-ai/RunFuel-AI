@@ -1,252 +1,119 @@
 import { useState } from 'react';
+import { motion } from 'framer-motion';
 
-const ONBOARDING = [
-  {
-    key: 'weeklyMiles',
-    question: "How many miles do you run per week?",
-    emoji: '📍',
-    options: [
-      { label: 'Just starting', value: '0-10' },
-      { label: '10 – 25 mi', value: '10-25' },
-      { label: '25 – 40 mi', value: '25-40' },
-      { label: '40 – 60 mi', value: '40-60' },
-      { label: '60+ mi', value: '60+' },
-    ],
-  },
-  {
-    key: 'experience',
-    question: "How long have you been running?",
-    emoji: '🏃',
-    options: [
-      { label: 'New runner', value: 'beginner' },
-      { label: '1 – 3 years', value: 'recreational' },
-      { label: '3 – 5 years', value: 'experienced' },
-      { label: '5+ years', value: 'elite' },
-    ],
-  },
-  {
-    key: 'goalDistance',
-    question: "What's your main race goal?",
-    emoji: '🏅',
-    options: [
-      { label: '5K', value: '5k' },
-      { label: '10K', value: '10k' },
-      { label: 'Half Marathon', value: 'half' },
-      { label: 'Full Marathon', value: 'full' },
-      { label: 'Ultra', value: 'ultra' },
-      { label: 'Just running', value: 'none' },
-    ],
-  },
-];
+const O    = '#FF4F00';
+const TEXT = '#F2F2F2';
+const MUTED= '#666666';
+const LINE = 'rgba(255,255,255,0.07)';
 
 export default function Auth({ onAuth }) {
-  const [mode, setMode]       = useState('login');
-  const [form, setForm]       = useState({ name: '', email: '', password: '' });
-  const [error, setError]     = useState('');
-  const [loading, setLoading] = useState(false);
-  const [step, setStep]       = useState('auth'); // 'auth' | 'onboarding'
-  const [onbStep, setOnbStep] = useState(0);
-  const [profile, setProfile] = useState({});
-  const [pendingUser, setPendingUser] = useState(null);
+  const [mode,     setMode]     = useState('login');
+  const [name,     setName]     = useState('');
+  const [email,    setEmail]    = useState('');
+  const [password, setPassword] = useState('');
+  const [error,    setError]    = useState('');
+  const [loading,  setLoading]  = useState(false);
 
-  function set(k, v) { setForm(f => ({ ...f, [k]: v })); setError(''); }
+  function toggle() { setMode(m => m === 'login' ? 'signup' : 'login'); setError(''); }
 
   function submit(e) {
     e.preventDefault();
-    if (!form.email.trim() || !form.password.trim()) { setError('Email and password are required.'); return; }
-    if (mode === 'signup' && !form.name.trim()) { setError('What should we call you?'); return; }
+    if (!email.trim())    return setError('Email is required.');
+    if (!password.trim()) return setError('Password is required.');
+    if (mode === 'signup' && !name.trim()) return setError('What should we call you?');
     setLoading(true);
     setTimeout(() => {
-      const user = {
-        name: form.name.trim() || form.email.split('@')[0],
-        email: form.email.trim().toLowerCase(),
-        createdAt: new Date().toISOString(),
-      };
-      if (mode === 'signup') {
-        setPendingUser(user);
-        setLoading(false);
-        setStep('onboarding');
-      } else {
-        const stored = localStorage.getItem('runfuel_user');
-        const existing = stored ? JSON.parse(stored) : user;
-        localStorage.setItem('runfuel_user', JSON.stringify(existing));
-        onAuth(existing);
-      }
-    }, 600);
-  }
-
-  function selectOption(key, value) {
-    const next = { ...profile, [key]: value };
-    setProfile(next);
-    if (onbStep < ONBOARDING.length - 1) {
-      setTimeout(() => setOnbStep(s => s + 1), 220);
-    } else {
-      const finalUser = { ...pendingUser, ...next };
-      localStorage.setItem('runfuel_user', JSON.stringify(finalUser));
-      onAuth(finalUser);
-    }
-  }
-
-  if (step === 'onboarding') {
-    const current = ONBOARDING[onbStep];
-    return (
-      <div
-        className="min-h-screen flex flex-col px-6"
-        style={{ background: 'linear-gradient(160deg, #fff 60%, #FFF3ED 100%)' }}
-      >
-        {/* Progress bar */}
-        <div className="pt-14 pb-2">
-          <div className="flex gap-1.5">
-            {ONBOARDING.map((_, i) => (
-              <div
-                key={i}
-                className="flex-1 rounded-full transition-all duration-300"
-                style={{
-                  height: 4,
-                  background: i <= onbStep ? '#FF4F00' : '#F3F4F6',
-                }}
-              />
-            ))}
-          </div>
-        </div>
-
-        <div className="flex-1 flex flex-col justify-center" style={{ maxWidth: 400, margin: '0 auto', width: '100%' }}>
-          <div className="mb-8">
-            <div className="text-4xl mb-4">{current.emoji}</div>
-            <h2 className="font-black text-2xl leading-tight" style={{ color: '#1A1A1A' }}>
-              {current.question}
-            </h2>
-            <p className="text-sm mt-1" style={{ color: '#9CA3AF' }}>
-              {onbStep + 1} of {ONBOARDING.length}
-            </p>
-          </div>
-
-          <div className="space-y-2.5">
-            {current.options.map(opt => (
-              <button
-                key={opt.value}
-                onClick={() => selectOption(current.key, opt.value)}
-                className="w-full py-4 px-5 rounded-2xl font-bold text-left transition-all duration-150 active:scale-95"
-                style={{
-                  background: profile[current.key] === opt.value
-                    ? 'linear-gradient(135deg,#FF4F00,#FF7433)'
-                    : 'white',
-                  color: profile[current.key] === opt.value ? 'white' : '#1A1A1A',
-                  boxShadow: profile[current.key] === opt.value
-                    ? '0 6px 20px rgba(255,79,0,0.35)'
-                    : '0 1px 8px rgba(0,0,0,0.06)',
-                  border: profile[current.key] === opt.value ? 'none' : '1.5px solid #F3F4F6',
-                }}
-              >
-                {opt.label}
-              </button>
-            ))}
-          </div>
-        </div>
-      </div>
-    );
+      const stored = localStorage.getItem('runfuel_user');
+      const user = mode === 'login' && stored
+        ? JSON.parse(stored)
+        : { name: name.trim() || email.split('@')[0], email: email.trim().toLowerCase(), createdAt: new Date().toISOString() };
+      localStorage.setItem('runfuel_user', JSON.stringify(user));
+      onAuth(user);
+      setLoading(false);
+    }, 500);
   }
 
   return (
-    <div
-      className="min-h-screen flex flex-col items-center justify-center px-6"
-      style={{ background: 'linear-gradient(160deg, #fff 60%, #FFF3ED 100%)' }}
-    >
-      {/* Logo + wordmark */}
-      <div className="flex flex-col items-center mb-10">
-        <div
-          className="mb-5 flex items-center justify-center"
-          style={{
-            width: 88, height: 88, borderRadius: 22,
-            background: 'linear-gradient(145deg, #FF6020, #D93A00)',
-            boxShadow: '0 12px 40px rgba(255,79,0,0.4)',
-          }}
-        >
-          <svg viewBox="0 0 100 100" width="54" height="54" style={{ overflow: 'visible' }}>
-            <circle cx="66" cy="19" r="9" fill="white"/>
-            <line x1="64" y1="28" x2="54" y2="51" stroke="white" strokeWidth="7" strokeLinecap="round"/>
-            <polyline points="60,36 70,45 76,41" stroke="white" strokeWidth="5.5" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
-            <polyline points="59,37 49,31 45,27" stroke="white" strokeWidth="4.5" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
-            <polyline points="55,50 62,63 68,58" stroke="white" strokeWidth="7" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
-            <polyline points="55,50 44,64 34,76" stroke="white" strokeWidth="7" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
-        </div>
-        <h1 className="font-black text-3xl tracking-tight" style={{ color: '#1A1A1A' }}>
-          Run<span style={{ color: '#FF4F00' }}>Fuel</span> AI
+    <div style={{
+      background: '#0D0D0D', minHeight: '100dvh', color: TEXT,
+      fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif',
+      padding: '64px 24px 40px', maxWidth: 400, margin: '0 auto',
+      display: 'flex', flexDirection: 'column', justifyContent: 'center',
+    }}>
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: 40 }}>
+        <img src="/logo.svg" alt="RunFuel AI" style={{
+          width: 76, height: 76, borderRadius: 20,
+          boxShadow: '0 8px 32px rgba(255,79,0,0.35)', marginBottom: 18,
+        }} />
+        <p style={{ color: O, fontSize: 9, fontWeight: 800, letterSpacing: 4, margin: '0 0 6px' }}>RUNFUEL AI</p>
+        <h1 style={{ fontSize: 26, fontWeight: 900, color: TEXT, margin: 0, letterSpacing: -0.5 }}>
+          {mode === 'login' ? 'Welcome back.' : 'Start fueling.'}
         </h1>
-        <p className="text-sm font-medium mt-1" style={{ color: '#9CA3AF' }}>Full-cycle running nutrition</p>
       </div>
 
-      <div
-        className="w-full rounded-3xl p-7 space-y-4"
-        style={{ maxWidth: 400, background: 'white', boxShadow: '0 4px 40px rgba(0,0,0,0.08)', border: '1px solid #F3F4F6' }}
-      >
-        <h2 className="font-black text-lg" style={{ color: '#1A1A1A' }}>
-          {mode === 'login' ? 'Welcome back' : 'Create your account'}
-        </h2>
-
-        <form onSubmit={submit} className="space-y-3">
+      <div style={{ background: '#181818', border: `1px solid ${LINE}`, borderRadius: 20, padding: '28px 24px' }}>
+        <form onSubmit={submit}>
           {mode === 'signup' && (
-            <AuthInput label="Your name" type="text" placeholder="JD" value={form.name} onChange={v => set('name', v)} autoFocus />
+            <Field label="NAME" type="text" placeholder="Your name" value={name} onChange={setName} />
           )}
-          <AuthInput label="Email" type="email" placeholder="you@example.com" value={form.email} onChange={v => set('email', v)} autoFocus={mode === 'login'} />
-          <AuthInput label="Password" type="password" placeholder="••••••••" value={form.password} onChange={v => set('password', v)} />
+          <Field label="EMAIL"    type="email"    placeholder="you@example.com" value={email}    onChange={setEmail} />
+          <Field label="PASSWORD" type="password" placeholder="••••••••"        value={password} onChange={setPassword} />
 
-          {error && <p className="text-xs font-semibold" style={{ color: '#EF4444' }}>{error}</p>}
+          {error && (
+            <p style={{ color: O, fontSize: 12, fontWeight: 700, margin: '0 0 16px' }}>{error}</p>
+          )}
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full py-4 rounded-2xl font-black text-white text-base tracking-wide transition-all active:scale-95"
+          <motion.button type="submit" whileTap={{ scale: 0.97 }} disabled={loading}
             style={{
-              background: loading ? '#F3F4F6' : 'linear-gradient(135deg,#FF4F00,#FF7433)',
-              color: loading ? '#9CA3AF' : 'white',
-              boxShadow: loading ? 'none' : '0 6px 20px rgba(255,79,0,0.4)',
-            }}
-          >
-            {loading ? '...' : mode === 'login' ? 'Log In' : 'Get Started'}
-          </button>
+              width: '100%', padding: '18px 0', border: 'none', borderRadius: 12,
+              background: loading ? '#222' : `linear-gradient(135deg, #FF6230, ${O})`,
+              color: loading ? '#444' : '#fff',
+              fontSize: 13, fontWeight: 900, letterSpacing: 3,
+              cursor: loading ? 'default' : 'pointer', fontFamily: 'inherit',
+              boxShadow: loading ? 'none' : '0 8px 28px rgba(255,79,0,0.35)',
+              transition: 'all 0.2s',
+            }}>
+            {loading ? '…' : mode === 'login' ? 'LOG IN' : 'CREATE ACCOUNT'}
+          </motion.button>
         </form>
 
-        <p className="text-center text-sm" style={{ color: '#9CA3AF' }}>
-          {mode === 'login' ? "Don't have an account? " : 'Already have an account? '}
-          <button
-            onClick={() => { setMode(m => m === 'login' ? 'signup' : 'login'); setError(''); }}
-            className="font-bold" style={{ color: '#FF4F00' }}
-          >
+        <div style={{ textAlign: 'center', marginTop: 20 }}>
+          <span style={{ fontSize: 12, color: MUTED }}>
+            {mode === 'login' ? "Don't have an account? " : 'Already have one? '}
+          </span>
+          <button onClick={toggle} style={{
+            background: 'none', border: 'none', color: O,
+            fontSize: 12, fontWeight: 800, cursor: 'pointer', fontFamily: 'inherit',
+          }}>
             {mode === 'login' ? 'Sign Up' : 'Log In'}
           </button>
-        </p>
+        </div>
       </div>
 
-      <p className="mt-8 text-xs text-center" style={{ color: '#D1D5DB', maxWidth: 320 }}>
-        Your data stays on your device. No account required to use offline.
+      <p style={{ color: '#444', fontSize: 10, textAlign: 'center', marginTop: 24, letterSpacing: 0.5 }}>
+        Your data stays on your device.
       </p>
     </div>
   );
 }
 
-function AuthInput({ label, type, placeholder, value, onChange, autoFocus }) {
+function Field({ label, type, placeholder, value, onChange }) {
   const [focused, setFocused] = useState(false);
   return (
-    <div>
-      <label className="block text-xs font-bold mb-1.5 uppercase tracking-widest" style={{ color: '#9CA3AF' }}>
-        {label}
-      </label>
+    <div style={{ marginBottom: 16 }}>
+      <p style={{ color: MUTED, fontSize: 9, fontWeight: 800, letterSpacing: 4, margin: '0 0 8px' }}>{label}</p>
       <input
-        type={type}
-        placeholder={placeholder}
-        value={value}
+        type={type} placeholder={placeholder} value={value}
         onChange={e => onChange(e.target.value)}
-        autoFocus={autoFocus}
-        onFocus={() => setFocused(true)}
-        onBlur={() => setFocused(false)}
-        className="w-full px-4 py-3 rounded-xl text-sm font-medium outline-none transition-all"
+        onFocus={() => setFocused(true)} onBlur={() => setFocused(false)}
         style={{
-          border: `1.5px solid ${focused ? '#FF4F00' : '#E5E7EB'}`,
-          background: focused ? '#FFFAF8' : '#FAFAFA',
-          color: '#1A1A1A',
-          boxShadow: focused ? '0 0 0 3px rgba(255,79,0,0.08)' : 'none',
+          width: '100%', padding: '13px 16px', borderRadius: 12, boxSizing: 'border-box',
+          border: `1.5px solid ${focused ? O : 'rgba(255,255,255,0.08)'}`,
+          background: focused ? '#202020' : '#141414',
+          color: '#F2F2F2', fontSize: 14, fontWeight: 500, fontFamily: 'inherit',
+          outline: 'none',
+          boxShadow: focused ? `0 0 0 3px rgba(255,79,0,0.12)` : 'none',
+          transition: 'all 0.15s',
         }}
       />
     </div>

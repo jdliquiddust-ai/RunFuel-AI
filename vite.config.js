@@ -3,5 +3,9 @@ import react from '@vitejs/plugin-react';
 
 export default defineConfig({
   plugins: [react()],
-  base: '/RunFuel-AI/',
+  base: '/',
+  server: {
+    host: true,
+    port: 5177,
+  },
 });
